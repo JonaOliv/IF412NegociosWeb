@@ -2,34 +2,36 @@
   //Alumno: Jonathan Oliva
   
   $registros = array();
+  $txtCodigo = 0;
+  $txtDescripcion = "";
+  $txtEstado = "";
   
   $conn = new mysqli("127.0.0.1", "root", "studentpwd", "nw201501");
   if($conn->errno){
     die("DB no can: " . $conn->error);
   }
   if(isset($_POST["btnIns"])){
-    $registro = array();
-    $registro["codigo"] = 0;
-    $registro["descripcion"] = $_POST["txtDsc"];
-    $registro["estado"] = $_POST["txtSts"];
+    $txtCodigo = 0;
+    $txtDescripcion = $_POST["txtDsc"];
+    $txtEstado = $_POST["txtSts"];
     
     $sqlstr = "INSERT INTO `nw201501`.`categorias` ( `ctgdsc`, `ctgest`)";
-    $sqlstr .= "VALUES ( '". $registro["descripcion"] ." ' , '" . $registro["estado"] ."');";
-    
+    $sqlstr .= "VALUES ( '".   $txtDescripcion ."' , '" . $txtEstado ."');";
+  
     $result = $conn->query($sqlstr);
   }
   if(isset($_POST["btnAct"])){
-    $registro = array();
-    $registro["codigo"] = intval($_POST["txtCod"]);
-    $registro["descripcion"] = $_POST["txtDsc"];
-    $registro["estado"] = $_POST["txtSts"];
+    $txtCodigo = intval($_POST["txtCod"]);
+    $txtDescripcion = $_POST["txtDsc"];
+    $txtEstado = $_POST["txtSts"];
+    
     $sqlstr="UPDATE `nw201501`.`categorias` SET ";
     
-    if(!is_null($registro["codigo"])){
-      if((!is_null($registro["descripcion"])) && $registro["descripcion"]!=""){
-        $sqlstr.="`ctgdsc` = '".$registro["descripcion"]."',";
+    if((!is_null($txtCodigo)) && $txtCodigo!=0){
+      if((!is_null($txtDescripcion)) && $txtDescripcion!=""){
+        $sqlstr.="`ctgdsc` = '".$txtDescripcion."',";
       }
-      $sqlstr.=" `ctgest` = '".$registro["estado"]."' WHERE `ctgid` = ".$registro["codigo"].";";
+      $sqlstr.=" `ctgest` = '".$txtEstado."' WHERE `ctgid` = ".$txtCodigo.";";
       $result = $conn->query($sqlstr);
     }
   }
@@ -49,16 +51,16 @@
     <h1>Categorias</h1>
     <form action="categorias.php" method="POST">
         <label for="txtCod">Codigo</label>
-        <input type="text" name="txtCod" id="txtCod" />
+        <input type="text" name="txtCod" id="txtCod" value="<?php echo $txtCodigo;?>"/>
         <br/>
-        <label for="txtDsc">Descripción</label>
-        <input type="text" name="txtDsc" id="txtDsc" />
+        <label for="txtDsc">DescripciÃ³n</label>
+        <input type="text" name="txtDsc" id="txtDsc" value="<?php echo $txtDescripcion;?>"/>
         <br/>
         <label for="txtSts">Estado</label>
         <select name="txtSts" id="txtSts">
-            <option value="PND">Pendiente</option>
-            <option value="CNF">Confirmado</option>
-            <option value="CNL">Cancelado</option>
+            <option value="PND" <?php echo $txtEstado=="PND"?"selected":"";?>>Pendiente</option>
+            <option value="CNF" <?php echo $txtEstado=="CNF"?"selected":"";?>>Confirmado</option>
+            <option value="CNL" <?php echo $txtEstado=="CNL"?"selected":"";?>>Cancelado</option>
         </select>
         <br/>
         <input type="submit" name="btnIns" value="Ingresar" />
@@ -69,7 +71,7 @@
       <table>
         <tr>
           <th>Codigo</th>
-          <th>Descripción</th>
+          <th>DescripciÃ³n</th>
           <th>Estado</th>
         </tr>
       <?php

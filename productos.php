@@ -2,6 +2,12 @@
   //Alumno: Jonathan Oliva
   
   $registros = array();
+  $txtCodigo=0;
+  $txtDescripcion="";
+  $txtPrdbrc="";
+  $txtCantidad=0;
+  $txtEstado="";
+  $txtCategoria=1;
   
   $conn = new mysqli("127.0.0.1", "root", "studentpwd", "nw201501");
   if($conn->errno){
@@ -9,67 +15,66 @@
   }
   
   if(isset($_POST["btnIns"])){
-    $registro = array();
-    $registro["codigo"] = 0;
-    $registro["descripcion"] = $_POST["txtDsc"];
-    $registro["prdbrc"] = $_POST["txtPrdbrc"];
-    $registro["cantidad"] = intval($_POST["txtCtd"]);
-    $registro["estado"] = $_POST["txtSts"];
-    $registro["categoria"] = intval($_POST["txtCat"]);
+    $txtCodigo = 0;
+    $txtDescripcion = $_POST["txtDsc"];
+    $txtPrdbrc = $_POST["txtPrdbrc"];
+    $txtCantidad = intval($_POST["txtCtd"]);
+    $txtEstado = $_POST["txtSts"];
+    $txtCategoria = intval($_POST["txtCat"]);
     
     $sqlstr = "INSERT INTO `nw201501`.`productos` ( `prddsc`, `prdbrc`, `prdctd`, `prdest`, `ctgid`)";
-    $sqlstr .= "VALUES ( '". $registro["descripcion"] ." ' , '" . $registro["prdbrc"]  . "', ". $registro["cantidad"] .", '" . $registro["estado"] . "', ". $registro["categoria"] .");";
+    $sqlstr .= "VALUES ( '". $txtDescripcion ." ' , '" . $txtPrdbrc  . "', ". $txtCantidad .", '" . $txtEstado . "', ". $txtCategoria .");";
     
     $result = $conn->query($sqlstr);
   }
   
   if(isset($_POST["btnAct"])){
-    $registro = array();
-    $registro["codigo"] = intval($_POST["txtCod"]);
-    $registro["descripcion"] = $_POST["txtDsc"];
-    $registro["prdbrc"] = $_POST["txtPrdbrc"];
-    $registro["cantidad"] = intval($_POST["txtCtd"]);
-    $registro["estado"] = $_POST["txtSts"];
-    $registro["categoria"] = intval($_POST["txtCat"]);
+    $txtCodigo = intval($_POST["txtCod"]);
+    $txtDescripcion = $_POST["txtDsc"];
+    $txtPrdbrc = $_POST["txtPrdbrc"];
+    $txtCantidad = intval($_POST["txtCtd"]);
+    $txtEstado = $_POST["txtSts"];
+    $txtCategoria = intval($_POST["txtCat"]);
+    
     $sqlstr="UPDATE `nw201501`.`productos` SET ";
     $intComa=0;
     
-    if(!is_null($registro["codigo"])){
-      if((!is_null($registro["descripcion"])) && $registro["descripcion"]!=""){
-        $sqlstr.="`prddsc` = '".$registro["descripcion"]."'";
+    if((!is_null($txtCodigo)) && $txtCodigo!=0){
+      if((!is_null($txtDescripcion)) && $txtDescripcion!=""){
+        $sqlstr.="`prddsc` = '".$txtDescripcion."'";
         $intComa=1;
       }
-      if((!is_null($registro["prdbrc"])) && $registro["prdbrc"]!=""){
+      if((!is_null($txtPrdbrc)) && $txtPrdbrc!=""){
         if($intComa==1){
-          $sqlstr.=",`prdbrc` = '".$registro["prdbrc"]."'";
+          $sqlstr.=",`prdbrc` = '".$txtPrdbrc."'";
         }else{
-          $sqlstr.="`prdbrc` = '".$registro["prdbrc"]."'";
+          $sqlstr.="`prdbrc` = '".$txtPrdbrc."'";
         }
         $intComa=1;
       }
-      if((!is_null($registro["cantidad"])) && $registro["cantidad"]!=0){
+      if((!is_null($txtCantidad)) && $txtCantidad!=0){
         if($intComa==1){
-          $sqlstr.=",`prdctd` = ".$registro["cantidad"];
+          $sqlstr.=",`prdctd` = ".$txtCantidad;
         }else{
-          $sqlstr.="`prdctd` = ".$registro["cantidad"];
+          $sqlstr.="`prdctd` = ".$txtCantidad;
         }
         $intComa=1;
       }
-      if((!is_null($registro["categoria"])) && $registro["categoria"]!=0){
+      if((!is_null($txtCategoria)) && $txtCategoria!=0){
         if($intComa==1){
-          $sqlstr.=",`ctgid` = ".$registro["categoria"];
+          $sqlstr.=",`ctgid` = ".$txtCategoria;
         }else{
-          $sqlstr.="`ctgid` = ".$registro["categoria"];
+          $sqlstr.="`ctgid` = ".$txtCategoria;
         }
         $intComa=1;
       }
       if($intComa==1){
-        $sqlstr.=",`prdest` = '".$registro["estado"]."'";
+        $sqlstr.=",`prdest` = '".$txtEstado."'";
       }else{
-        $sqlstr.="`prdest` = '".$registro["estado"]."'";
+        $sqlstr.="`prdest` = '".$txtEstado."'";
       }
       
-      $sqlstr.=" WHERE `prdid` = ".$registro["codigo"].";";
+      $sqlstr.=" WHERE `prdid` = ".$txtCodigo.";";
       $result = $conn->query($sqlstr);
     }
   }
@@ -90,26 +95,26 @@
     <h1>Productos</h1>
     <form action="productos.php" method="POST">
         <label for="txtCod">Codigo</label>
-        <input type="text" name="txtCod" id="txtCod" />
+        <input type="text" name="txtCod" id="txtCod" value="<?php echo $txtCodigo;?>"/>
         <br/>
         <label for="txtDsc">Descripción</label>
-        <input type="text" name="txtDsc" id="txtDsc" />
+        <input type="text" name="txtDsc" id="txtDsc" value="<?php echo $txtDescripcion;?>"/>
         <br/>
         <label for="txtPrdbrc">prdbrc</label>
-        <input type="text" name="txtPrdbrc" id="txtPrdbrc" />
+        <input type="text" name="txtPrdbrc" id="txtPrdbrc" value="<?php echo $txtPrdbrc;?>"/>
         <br/>
         <label for="txtCtd">Cantidad</label>
-        <input type="text" name="txtCtd" id="txtCtd" />
+        <input type="text" name="txtCtd" id="txtCtd" value="<?php echo $txtCantidad;?>"/>
         <br/>
         <label for="txtSts">Estado</label>
         <select name="txtSts" id="txtSts">
-            <option value="PND">Pendiente</option>
-            <option value="CNF">Confirmado</option>
-            <option value="CNL">Cancelado</option>
+            <option value="PND" <?php echo $txtEstado=="PND"?"selected":"";?>>Pendiente</option>
+            <option value="CNF" <?php echo $txtEstado=="CNF"?"selected":"";?>>Confirmado</option>
+            <option value="CNL" <?php echo $txtEstado=="CNL"?"selected":"";?>>Cancelado</option>
         </select>
         <br/>
         <label for="txtCat">Categoria</label>
-        <input type="text" name="txtCat" id="txtCat" />
+        <input type="text" name="txtCat" id="txtCat" value="<?php echo $txtCategoria;?>"/>
         <br/>
         <input type="submit" name="btnIns" value="Ingresar" />
         <input type="submit" name="btnAct" value="Actualizar" />
